@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Caja de la Amistad</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+        font-family: "Segoe UI", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #ffb6c1, #8e0445);
+        transition: background 1s ease;
+      }
+
+      body.festa-activa {
+        background: linear-gradient(135deg, #880e4f, #4a0033);
+      }
+
+      .message {
+        position: absolute;
+        top: 10%;
+        text-align: center;
+        font-size: 2em;
+        color: #fff;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: all 0.6s ease;
+        text-shadow: 2px 2px 10px #000;
+        z-index: 10;
+      }
+
+      .message.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .gift-box {
+        width: 160px;
+        height: 160px;
+        background: #ff4081;
+        position: relative;
+        border-radius: 15px;
+        cursor: pointer;
+        box-shadow: 0 0 25px #ff4081aa;
+        user-select: none;
+        overflow: hidden;
+      }
+
+      .lid {
+        width: 100%;
+        height: 40px;
+        background: #c2185b;
+        border-radius: 15px 15px 0 0;
+        transform-origin: top center;
+        transition: transform 0.5s ease;
+        z-index: 2;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .gift-box.open .lid {
+        transform: rotateX(160deg);
+      }
+
+      .ribbon {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: #fff;
+        border-radius: 50%;
+        top: 8px;
+        left: calc(50% - 15px);
+        box-shadow: 0 0 0 5px #c2185b;
+        z-index: 3;
+      }
+
+      .content {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 40px;
+        box-sizing: border-box;
+      }
+
+      .box-text {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: white;
+        transition: opacity 0.3s ease;
+      }
+
+      .box-text.hidden {
+        opacity: 0;
+      }
+
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: red;
+        animation: explode 10s ease forwards;
+        opacity: 0;
+        z-index: 5;
+      }
+
+      @keyframes explode {
+        0% {
+          transform: scale(0) translate(0, 0);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1.5) translate(var(--x), var(--y));
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="message" id="message">🎊 ¡Feliz Día de la Amistad! 🎉</div>
+
+    <div class="container">
+      <div class="gift-box" id="giftBox">
+        <div class="lid" id="lid"></div>
+        <div class="ribbon"></div>
+        <div class="content">
+          <span class="box-text" id="boxText">🎁 Haz clic aquí</span>
+        </div>
+      </div>
+    </div>
+<audio id="bgMusic" src="./friends.mp3"></audio>
+    <script>
+      const giftBox = document.getElementById("giftBox");
+      const lid = document.getElementById("lid");
+      const message = document.getElementById("message");
+      const boxText = document.getElementById("boxText");
+      const music = document.getElementById("bgMusic");
+      let isOpen = false;
+
+      giftBox.addEventListener("click", () => {
+        isOpen = !isOpen;
+
+        giftBox.classList.toggle("open", isOpen);
+        message.classList.toggle("visible", isOpen);
+        document.body.classList.toggle("festa-activa", isOpen);
+        boxText.classList.toggle("hidden", isOpen);
+
+        if (isOpen) {
+          // ▶️ Reproducir música desde el segundo 20
+          music.currentTime = 20;
+          music.play();
+
+          // 🎉 Confetti
+          for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement("div");
+            confetti.classList.add("confetti");
+            const color = [
+              "#ff4081",
+              "#ffeb3b",
+              "#00e676",
+              "#29b6f6",
+              "#ffffff",
+            ][Math.floor(Math.random() * 5)];
+            confetti.style.background = color;
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.top = Math.random() * 100 + "vh";
+            confetti.style.setProperty("--x", Math.random() * 400 - 200 + "px");
+            confetti.style.setProperty(
+              "--y",
+              Math.random() * -400 - 100 + "px"
+            );
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 10000);
+          }
+        } else {
+          music.pause(); // Puedes pausar si quieres al cerrar
+        }
+      });
+    </script>
+    
+  </body>
+</html>
